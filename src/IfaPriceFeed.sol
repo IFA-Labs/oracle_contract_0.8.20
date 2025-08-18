@@ -18,7 +18,7 @@ contract IfaPriceFeed is IIfaPriceFeed, Ownable {
 
     address public IfaPriceFeedVerifier;
     /// @notice Mapping of asset index to its price information
-    mapping(bytes32  => PriceFeed ) _assetInfo;
+    mapping(bytes32 => PriceFeed) _assetInfo;
 
     constructor(address _owner) {
         _initializeOwner(_owner); // setting owner of contract

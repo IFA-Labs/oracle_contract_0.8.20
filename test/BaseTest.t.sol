@@ -7,7 +7,7 @@ import "../src/IfaPriceFeedVerifier.sol";
 import "../src/Interface/IIfaPriceFeed.sol";
 
 contract BaseTest is Test {
-     struct PriceFeed {
+    struct PriceFeed {
         int256 price;
         int8 decimal;
         uint64 lastUpdateTime;
