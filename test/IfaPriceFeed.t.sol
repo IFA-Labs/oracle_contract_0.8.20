@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.29;
+pragma solidity 0.8.17;
 
 import "forge-std/Test.sol";
 import "../src/IfaPriceFeedVerifier.sol";
@@ -89,7 +89,7 @@ contract IfaPriceFeedTest is BaseTest {
     }
 
     function testGetPairbyId_OneInvalidAsset() public {
-        vm.expectRevert(abi.encodeWithSelector(IIfaPriceFeed.InvalidAssetIndex.selector, ASSET_NONEXISTENT));
+       vm.expectRevert(abi.encodeWithSelector(IIfaPriceFeed.InvalidAssetIndex.selector, ASSET_NONEXISTENT));
         priceFeed.getPairbyId(ASSET_BTC_INDEX, ASSET_NONEXISTENT, IIfaPriceFeed.PairDirection.Forward);
     }
 
@@ -134,10 +134,7 @@ contract IfaPriceFeedTest is BaseTest {
         assetIndexes1[0] = ASSET_CNGN_INDEX;
 
         vm.expectRevert(
-            abi.encodeWithSelector(
-                IIfaPriceFeed.InvalidAssetIndexLength.selector, assetIndexes0.length, assetIndexes1.length
-            )
-        );
+           "InvalidAssetIndexLength");
 
         priceFeed.getPairsbyIdForward(assetIndexes0, assetIndexes1);
     }
@@ -181,9 +178,7 @@ contract IfaPriceFeedTest is BaseTest {
         assetIndexes1[0] = ASSET_CNGN_INDEX;
 
         vm.expectRevert(
-            abi.encodeWithSelector(
-                IIfaPriceFeed.InvalidAssetIndexLength.selector, assetIndexes0.length, assetIndexes1.length
-            )
+            "InvalidAssetIndexLength"
         );
 
         priceFeed.getPairsbyIdBackward(assetIndexes0, assetIndexes1);
@@ -236,12 +231,7 @@ contract IfaPriceFeedTest is BaseTest {
         directions[0] = IIfaPriceFeed.PairDirection.Forward;
 
         vm.expectRevert(
-            abi.encodeWithSelector(
-                IIfaPriceFeed.InvalidAssetorDirectionIndexLength.selector,
-                assetIndexes0.length,
-                assetIndexes1.length,
-                directions.length
-            )
+           "InvalidAssetorDirectionIndexLength"
         );
 
         priceFeed.getPairsbyId(assetIndexes0, assetIndexes1, directions);
@@ -298,12 +288,12 @@ contract IfaPriceFeedTest is BaseTest {
 
     function testSetVerifier_ZeroAddress() public {
         vm.prank(owner);
-        vm.expectRevert(abi.encodeWithSelector(IIfaPriceFeed.InvalidVerifier.selector, address(0)));
+        vm.expectRevert("InvalidVerifier");
         priceFeed.setVerifier(address(0));
     }
 
     // ========== Event Tests ==========
-
+event AssetInfoSet(bytes32 indexed _assetIndex, IIfaPriceFeed.PriceFeed assetInfo);
     function testSetAssetInfo_EventEmission() public {
         IIfaPriceFeed.PriceFeed memory newPrice = IIfaPriceFeed.PriceFeed({
             decimal: -18,
@@ -313,16 +303,17 @@ contract IfaPriceFeedTest is BaseTest {
 
         // Test for event emission
         vm.expectEmit(true, true, false, true);
-        emit IIfaPriceFeed.AssetInfoSet(ASSET_BTC_INDEX, newPrice);
+        emit AssetInfoSet(ASSET_BTC_INDEX, newPrice);
 
         vm.prank(address(verifier));
         priceFeed.setAssetInfo(ASSET_BTC_INDEX, newPrice);
     }
+     event VerifierSet(address indexed _verifier);
 
     function testSetVerifier_EventEmission() public {
         // Test for event emission
         vm.expectEmit(true, false, false, false);
-        emit IIfaPriceFeed.VerifierSet(newVerifier);
+        emit VerifierSet(newVerifier);
 
         vm.prank(owner);
         priceFeed.setVerifier(newVerifier);

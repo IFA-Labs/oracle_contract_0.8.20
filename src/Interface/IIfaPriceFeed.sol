@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.29;
+pragma solidity 0.8.17;
 
 interface IIfaPriceFeed {
     enum PairDirection {
@@ -43,7 +43,7 @@ interface IIfaPriceFeed {
         uint256 derivedPrice;
     }
 
-    event AssetInfoSet(bytes32 indexed _assetIndex, PriceFeed  assetInfo);
+    event AssetInfoSet(bytes32 indexed _assetIndex, PriceFeed assetInfo);
     event VerifierSet(address indexed _verifier);
 
     function setAssetInfo(bytes32 _assetIndex, PriceFeed memory assetInfo) external;

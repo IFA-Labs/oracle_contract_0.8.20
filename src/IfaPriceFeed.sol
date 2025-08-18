@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.29;
+pragma solidity 0.8.17;
 
 import {IIfaPriceFeed} from "./Interface/IIfaPriceFeed.sol";
 import {Ownable} from "solady-0.1.12/src/auth/Ownable.sol";
@@ -18,7 +18,7 @@ contract IfaPriceFeed is IIfaPriceFeed, Ownable {
 
     address public IfaPriceFeedVerifier;
     /// @notice Mapping of asset index to its price information
-    mapping(bytes32 assetIndex => PriceFeed assetInfo) _assetInfo;
+    mapping(bytes32  => PriceFeed ) _assetInfo;
 
     constructor(address _owner) {
         _initializeOwner(_owner); // setting owner of contract
@@ -80,10 +80,7 @@ contract IfaPriceFeed is IIfaPriceFeed, Ownable {
         uint256 arrayLength = _assetIndexes0.length;
         DerviedPair[] memory pairsInfo = new DerviedPair[](arrayLength);
         // sayh you have asset0 =  CNGN/USD  and  asset1 =  BTC/USD   the function will give you  CNGN/BTC
-        require(
-            _assetIndexes0.length == _assetsIndexes1.length,
-            InvalidAssetIndexLength(_assetIndexes0.length, _assetsIndexes1.length)
-        );
+        require(_assetIndexes0.length == _assetsIndexes1.length, "InvalidAssetIndexLength");
         for (uint256 i = 0; i < arrayLength; i++) {
             pairsInfo[i] = _getPairInfo(_assetIndexes0[i], _assetsIndexes1[i], PairDirection.Forward);
         }
@@ -103,10 +100,7 @@ contract IfaPriceFeed is IIfaPriceFeed, Ownable {
         uint256 arrayLength = _assetIndexes0.length;
         DerviedPair[] memory pairsInfo = new DerviedPair[](arrayLength);
         // say you have asset0 =  CNGN/USD  and  asset1 =  BTC/USD   the function will give you BTC/CNGN
-        require(
-            _assetIndexes0.length == _assetsIndexes1.length,
-            InvalidAssetIndexLength(_assetIndexes0.length, _assetsIndexes1.length)
-        );
+        require(_assetIndexes0.length == _assetsIndexes1.length, "InvalidAssetIndexLength");
         for (uint256 i = 0; i < arrayLength; i++) {
             pairsInfo[i] = _getPairInfo(_assetIndexes0[i], _assetsIndexes1[i], PairDirection.Backward);
         }
@@ -128,7 +122,7 @@ contract IfaPriceFeed is IIfaPriceFeed, Ownable {
 
         require(
             _assetIndexes0.length == _assetsIndexes1.length && _assetIndexes0.length == _direction.length,
-            InvalidAssetorDirectionIndexLength(_assetIndexes0.length, _assetsIndexes1.length, _direction.length)
+            "InvalidAssetorDirectionIndexLength"
         );
         for (uint256 i = 0; i < arrayLength; i++) {
             pairsInfo[i] = _getPairInfo(_assetIndexes0[i], _assetsIndexes1[i], _direction[i]);
@@ -146,7 +140,7 @@ contract IfaPriceFeed is IIfaPriceFeed, Ownable {
         view
         returns (DerviedPair memory pairInfo)
     {
-        require(_assetIndex0 != _assetIndex1, InvalidAssetPairing());
+        require(_assetIndex0 != _assetIndex1, "InvalidAssetPairing");
         (PriceFeed memory _assetInfo0, bool exist0) = _getAssetInfo(_assetIndex0);
         (PriceFeed memory _assetInfo1, bool exist1) = _getAssetInfo(_assetIndex1);
         if (!exist0) revert InvalidAssetIndex(_assetIndex0);
@@ -190,7 +184,7 @@ contract IfaPriceFeed is IIfaPriceFeed, Ownable {
     /// @param _verifier The address of the verifier
 
     function setVerifier(address _verifier) external onlyOwner {
-        require(_verifier != address(0), InvalidVerifier(_verifier));
+        require(_verifier != address(0), "InvalidVerifier");
         IfaPriceFeedVerifier = _verifier;
         emit VerifierSet(_verifier);
     }
@@ -236,8 +230,8 @@ contract IfaPriceFeed is IIfaPriceFeed, Ownable {
 
     function _scalePrice(int256 price, int8 decimal) internal pure returns (uint256) {
         uint256 scalePrice = uint256(price) * 10 ** (MAX_DECIMAL - abs(decimal));
-        require(scalePrice <= MAX_INT256 ,ScalePriceOverflow());
-        require(scalePrice > uint256(price),InvalidScalePrice());
+        require(scalePrice <= MAX_INT256, "ScalePriceOverflow");
+        require(scalePrice > uint256(price), "InvalidScalePrice");
         return scalePrice;
     }
     ///@dev Override to return true to prevent double-initialization.

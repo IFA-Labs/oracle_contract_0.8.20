@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.29;
+pragma solidity 0.8.17;
 
 import "forge-std/Test.sol";
 import "../src/IfaPriceFeed.sol";
@@ -7,6 +7,18 @@ import "../src/IfaPriceFeedVerifier.sol";
 import "../src/Interface/IIfaPriceFeed.sol";
 
 contract BaseTest is Test {
+     struct PriceFeed {
+        int256 price;
+        int8 decimal;
+        uint64 lastUpdateTime;
+    }
+
+    struct DerviedPair {
+        int8 decimal; // DerviedPair is always  MAX_DECIMAL(-30)
+        uint256 lastUpdateTime; // the  min of  asset0.lastUpdateTime  and asset1.lastUpdateTime
+        uint256 derivedPrice;
+    }
+
     // Constants
     bytes32 constant ASSET_BTC_INDEX = keccak256("BTC");
     bytes32 constant ASSET_ETH_INDEX = keccak256("ETH");

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity 0.8.29;
+pragma solidity 0.8.17;
 
 import {IIfaPriceFeed} from "./Interface/IIfaPriceFeed.sol";
 import {Ownable} from "solady-0.1.12/src/auth/Ownable.sol";
@@ -23,7 +23,7 @@ contract IfaPriceFeedVerifier is Ownable {
     }
 
     modifier onlyRelayerNode() {
-        require(msg.sender == relayerNode, OnlyRelayerNode(msg.sender));
+        require(msg.sender == relayerNode, "OnlyRelayerNode");
         _;
     }
 
@@ -31,14 +31,12 @@ contract IfaPriceFeedVerifier is Ownable {
         external
         onlyRelayerNode
     {
-        require(_assetindex.length == _prices.length, InvalidAssetIndexorPriceLength());
-      
-
+        require(_assetindex.length == _prices.length, "InvalidAssetIndexorPriceLength");
 
         for (uint256 i = 0; i < _assetindex.length; i++) {
             bytes32 pair = _assetindex[i];
             IIfaPriceFeed.PriceFeed calldata currentPriceFeed = _prices[i];
-              require(currentPriceFeed.price > 0,InvalidAssePrice());
+            require(currentPriceFeed.price > 0, "InvalidAssePrice");
             uint256 currenttimestamp = currentPriceFeed.lastUpdateTime;
             (IIfaPriceFeed.PriceFeed memory prevPriceFeed,) = IfaPriceFeed.getAssetInfo(pair);
             if (prevPriceFeed.lastUpdateTime >= currenttimestamp) {
@@ -50,7 +48,7 @@ contract IfaPriceFeedVerifier is Ownable {
     }
 
     function setRelayerNode(address _relayerNode) external onlyOwner {
-        require(_relayerNode != address(0), InvalidRelayerNode(_relayerNode));
+        require(_relayerNode != address(0), "InvalidRelayerNode");
         address oldRelayerNode = relayerNode;
         relayerNode = _relayerNode;
         emit RelayerNodeSet(_relayerNode, oldRelayerNode);

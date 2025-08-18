@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.29;
+pragma solidity 0.8.17;
 
 import {Script} from "forge-std/Script.sol";
 import {console} from "forge-std/console.sol";
@@ -23,12 +23,11 @@ contract DeployPriceFeed is Script {
     }
 
     function _depolyOracle(address owner) internal {
-        ifaPriceFeed = new IfaPriceFeed{salt: SALT_IfaPriceFeed}(owner);
+        ifaPriceFeed = new IfaPriceFeed(owner);
         console.log("IfaPriceFeed deployed at:", address(ifaPriceFeed));
         console.log("OWner from:", ifaPriceFeed.owner());
-        ifaPriceFeedVerifier = new IfaPriceFeedVerifier{salt: SALT_IfaPriceFeed}(
-            address(0xCCB3f2CC8592126a80B91B53eE4d7332F54d980d), address(ifaPriceFeed), owner
-        ); //@note change the relayer address when deploying to testnet/mainnet
+        ifaPriceFeedVerifier =
+            new IfaPriceFeedVerifier(address(0xCCB3f2CC8592126a80B91B53eE4d7332F54d980d), address(ifaPriceFeed), owner); //@note change the relayer address when deploying to testnet/mainnet
         console.log("IfaPriceFeedVerifier deployed at:", address(ifaPriceFeedVerifier));
         ifaPriceFeed.setVerifier(address(ifaPriceFeedVerifier));
     }

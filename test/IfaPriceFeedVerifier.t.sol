@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.29;
+pragma solidity 0.8.17;
 
 import "../src/Interface/IIfaPriceFeed.sol";
 import "./BaseTest.t.sol";
@@ -73,7 +73,7 @@ contract IfaPriceFeedVerifierTest is BaseTest {
         prices[0] = priceBTC;
 
         vm.prank(user);
-        vm.expectRevert(abi.encodeWithSignature("OnlyRelayerNode(address)", user));
+        vm.expectRevert("OnlyRelayerNode");
         verifier.submitPriceFeed(assetIndexes, prices);
     }
 
@@ -86,7 +86,7 @@ contract IfaPriceFeedVerifierTest is BaseTest {
         prices[0] = priceBTC;
 
         vm.prank(relayerNode);
-        vm.expectRevert(abi.encodeWithSignature("InvalidAssetIndexorPriceLength()"));
+        vm.expectRevert("InvalidAssetIndexorPriceLength");
         verifier.submitPriceFeed(assetIndexes, prices);
     }
 
@@ -107,7 +107,7 @@ contract IfaPriceFeedVerifierTest is BaseTest {
 
     function testsetRelayerNode_ZeroAddress() public {
         vm.prank(owner);
-        vm.expectRevert(abi.encodeWithSignature("InvalidRelayerNode(address)", address(0)));
+        vm.expectRevert("InvalidRelayerNode");
         verifier.setRelayerNode(address(0));
     }
 }

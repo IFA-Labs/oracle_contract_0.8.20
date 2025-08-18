@@ -26,6 +26,14 @@ deploy-base-mainnet:
 		--etherscan-api-key $(BASESCAN_API_KEY) \
 		--verify \
 		--broadcast
+deploy-assestchain-test:
+	@forge script script/DeployPriceFeed.s.sol:DeployPriceFeed \
+		--rpc-url $(ASSETCHAINTEST_RPC_URL) \
+		--private-key $(private_key) \
+		--verify \
+		--verifier blockscout \
+		--verifier-url https://scan-testnet.assetchain.org/api \
+		--broadcast
 deploy-chiado:
 	@forge script script/DeployPriceFeed.s.sol:DeployPriceFeed \
 		--rpc-url $(CHIADO_RPC_URL) \
@@ -34,6 +42,7 @@ deploy-chiado:
 		--verifier blockscout \
 		--verifier-url https://gnosis-chiado.blockscout.com/api/ \
 		--broadcast
+		
 deploy-gnosis:
 	@forge script script/DeployPriceFeed.s.sol:DeployPriceFeed \
 		--rpc-url $(GNOSIS_RPC_URL) \
