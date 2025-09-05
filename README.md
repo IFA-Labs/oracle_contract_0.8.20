@@ -15,7 +15,14 @@ A decentralized oracle solution specialized for stablecoin price data across var
   `IfaPriceFeed` deployed at: `0xA9F17344689C2c2328F94464998db1d3e35B80dC`
   `IfaPriceFeedVerifier` deployed at: `0xCca25A8A54Ba36697580270AF6b96B37f57E2A4D`
 ```
-### Contract deployed on Assetchain test at :
+### Contract deployed on Assetchain MAINNET at :
+```shell
+== Logs ==
+  
+  `IfaPriceFeed` deployed at: `0x6AA2548b46af3B5193dbCb57Af67eb290a0F413C`
+  `IfaPriceFeedVerifier` deployed at: `0xABC8227c92aC2EBCd66e41D4ed52b3f24dD8f921`
+```
+### Contract deployed on Assetchain testnet at :
 ```shell
 == Logs ==
   
